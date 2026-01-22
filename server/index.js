@@ -8,24 +8,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ---- health ----
 app.get("/health", (req, res) => res.json({ ok: true }));
 
-// ---- songs catalog ----
 const SONGS = [
-  { id: "s1", title: "Blinding Lights", artist: "The Weeknd", album: "After Hours", durationSec: 200 },
-  { id: "s2", title: "Shape of You", artist: "Ed Sheeran", album: "÷", durationSec: 233 },
-  { id: "s3", title: "Levitating", artist: "Dua Lipa", album: "Future Nostalgia", durationSec: 203 },
-  { id: "s4", title: "bad guy", artist: "Billie Eilish", album: "WHEN WE ALL FALL ASLEEP", durationSec: 194 },
-  { id: "s5", title: "Watermelon Sugar", artist: "Harry Styles", album: "Fine Line", durationSec: 174 },
-  { id: "s6", title: "Someone You Loved", artist: "Lewis Capaldi", album: "Divinely Uninspired", durationSec: 182 },
-  { id: "s7", title: "Stay", artist: "The Kid LAROI, Justin Bieber", album: "F*CK LOVE 3", durationSec: 141 },
-  { id: "s8", title: "Circles", artist: "Post Malone", album: "Hollywood's Bleeding", durationSec: 215 },
-  { id: "s9", title: "As It Was", artist: "Harry Styles", album: "Harry's House", durationSec: 167 },
-  { id: "s10", title: "Anti-Hero", artist: "Taylor Swift", album: "Midnights", durationSec: 200 }
+  { id: "s1", title: "Blinding Lights", artist: "The Weeknd", durationSec: 200 },
+  { id: "s2", title: "Shape of You", artist: "Ed Sheeran", durationSec: 233 },
+  { id: "s3", title: "Levitating", artist: "Dua Lipa", durationSec: 203 },
+  { id: "s4", title: "bad guy", artist: "Billie Eilish", durationSec: 194 },
+  { id: "s5", title: "Watermelon Sugar", artist: "Harry Styles", durationSec: 174 },
+  { id: "s6", title: "Someone You Loved", artist: "Lewis Capaldi", durationSec: 182 },
+  { id: "s7", title: "Stay", artist: "The Kid LAROI, Justin Bieber", durationSec: 141 },
+  { id: "s8", title: "Circles", artist: "Post Malone", durationSec: 215 },
+  { id: "s9", title: "As It Was", artist: "Harry Styles", durationSec: 167 },
+  { id: "s10", title: "Anti-Hero", artist: "Taylor Swift", durationSec: 200 }
 ];
 
-// ---- persistence (data.json) ----
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DATA_PATH = path.join(__dirname, "data.json");
@@ -47,7 +44,6 @@ function makeId(prefix = "pl") {
   return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
 }
 
-// ---- songs search ----
 app.get("/songs", (req, res) => {
   const q = (req.query.query || "").toString().trim().toLowerCase();
   if (!q) return res.json({ songs: SONGS });
@@ -60,15 +56,11 @@ app.get("/songs", (req, res) => {
   res.json({ songs: filtered });
 });
 
-// ---- playlists CRUD (Step 2) ----
-
-// list playlists
 app.get("/playlists", (req, res) => {
   const data = readData();
   res.json({ playlists: data.playlists });
 });
 
-// create playlist
 app.post("/playlists", (req, res) => {
   const name = (req.body?.name || "").toString().trim();
   if (!name) return res.status(400).json({ error: "Playlist name is required" });
@@ -81,7 +73,6 @@ app.post("/playlists", (req, res) => {
   res.status(201).json({ playlist });
 });
 
-// delete playlist
 app.delete("/playlists/:id", (req, res) => {
   const { id } = req.params;
 
@@ -97,7 +88,6 @@ app.delete("/playlists/:id", (req, res) => {
   res.json({ ok: true });
 });
 
-// add song to playlist
 app.post("/playlists/:id/songs", (req, res) => {
     const { id } = req.params;
     const songId = (req.body?.songId || "").toString().trim();
@@ -116,7 +106,6 @@ app.post("/playlists/:id/songs", (req, res) => {
     res.json({ playlist });
   });
   
-  // remove song from playlist
   app.delete("/playlists/:id/songs/:songId", (req, res) => {
     const { id, songId } = req.params;
   

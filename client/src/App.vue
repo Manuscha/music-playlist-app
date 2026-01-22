@@ -2,17 +2,15 @@
   <div class="app">
     <header class="topbar">
       <div class="brand">
-        <div class="logo"></div>
         <div>
           <div class="title">Music Playlist</div>
-          <div class="subtitle">Search • Create playlists • Add songs</div>
         </div>
       </div>
 
       <div class="search">
         <input
           v-model="query"
-          placeholder="Search by title, artist, album..."
+          placeholder="Search"
           @keydown.enter="loadSongs"
         />
         <button @click="loadSongs" :disabled="loadingSongs">
@@ -35,10 +33,10 @@
         <div class="newPlaylist">
           <input
             v-model="newPlaylistName"
-            placeholder="New playlist name..."
+            placeholder="New playlist name"
             @keydown.enter="createPlaylist"
           />
-          <button @click="createPlaylist">Create</button>
+          <button @click="createPlaylist">+</button>
         </div>
 
         <div class="playlistList">
@@ -58,7 +56,7 @@
           </div>
 
           <div v-if="!playlists.length && !loadingPlaylists" class="emptyHint">
-            Create your first playlist above ⬆
+            Create your first playlist
           </div>
         </div>
       </aside>
@@ -72,10 +70,9 @@
 
         <div class="table">
           <div class="row head">
-            <div>#</div>
+            <div>no.</div>
             <div>Title</div>
             <div>Artist</div>
-            <div class="hideSm">Album</div>
             <div class="right">Time</div>
             <div class="right">Action</div>
           </div>
@@ -84,7 +81,6 @@
             <div class="muted">{{ idx + 1 }}</div>
             <div class="songTitle">{{ s.title }}</div>
             <div class="muted">{{ s.artist }}</div>
-            <div class="muted hideSm">{{ s.album }}</div>
             <div class="right muted">{{ formatDuration(s.durationSec) }}</div>
 
             <div class="right">
@@ -141,7 +137,7 @@
             </div>
 
             <div v-if="!selectedPlaylist.songIds.length" class="emptyHint">
-              Add songs from the middle panel ➜
+              Your Playlist !!
             </div>
           </div>
         </div>
@@ -157,18 +153,13 @@ import { computed, onMounted, ref, watch } from "vue";
 
 const API = import.meta.env.VITE_API_URL;
 
-// songs
 const query = ref("");
 const songs = ref([]);
 const loadingSongs = ref(false);
-
-// playlists
 const playlists = ref([]);
 const loadingPlaylists = ref(false);
 const selectedPlaylistId = ref(null);
 const newPlaylistName = ref("");
-
-// shared
 const error = ref("");
 
 const selectedPlaylist = computed(() => {
@@ -198,7 +189,6 @@ function songById(songId) {
   return songs.value.find((s) => s.id === songId) || null;
 }
 
-// ถ้าเพลงไม่อยู่ใน results ตอนนี้ (เพราะค้นหาอยู่) ให้โชว์เป็น fallback
 function songTitleById(songId) {
   return songById(songId)?.title || `Song (${songId})`;
 }
@@ -206,7 +196,7 @@ function songArtistById(songId) {
   return songById(songId)?.artist || "";
 }
 
-// ---- API calls ----
+
 async function loadSongs() {
   loadingSongs.value = true;
   error.value = "";
@@ -287,7 +277,6 @@ async function deletePlaylist(id) {
   }
 }
 
-// ---- Step 3 add/remove ----
 async function addSong(songId) {
   if (!selectedPlaylistId.value) {
     error.value = "Please select a playlist first";
@@ -304,7 +293,6 @@ async function addSong(songId) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Add failed");
 
-    // update playlist in memory
     playlists.value = playlists.value.map((p) => (p.id === data.playlist.id ? data.playlist : p));
   } catch (e) {
     error.value = e.message || "Failed to add song";
@@ -374,9 +362,8 @@ body{
   backdrop-filter: blur(10px);
 }
 
-.brand{ display:flex; gap:10px; align-items:center; min-width:220px; }
-.logo{ width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg,var(--green),#1aa1ff); }
-.title{ font-weight:800; }
+.brand{ display:flex; gap:10px; align-items:center; min-width:220px; justify-content:center;}
+.title{ font-weight:800;}
 .subtitle{ color:var(--muted); font-size:12px; margin-top:2px; }
 
 .search{ display:flex; gap:10px; flex:1; align-items:center; }
@@ -450,7 +437,7 @@ button.danger{
 .playlistList{ padding: 10px 8px 12px; overflow:auto; }
 .playlistItem{
   display:grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 45% auto auto;
   gap: 6px 10px;
   align-items:center;
   padding: 10px 10px;
@@ -470,7 +457,7 @@ button.danger{
 .playlistCount{ color:var(--muted); font-size:12px; }
 
 .trash{
-  width:34px; height:34px;
+  width:40px; height:38px;
   border-radius:12px;
   background: transparent;
   border: 1px solid rgba(255,255,255,0.06);
@@ -495,7 +482,7 @@ button.danger{
 .table{ padding:10px; overflow:auto; }
 .row{
   display:grid;
-  grid-template-columns: 40px 2fr 1.6fr 1.6fr 70px 120px;
+  grid-template-columns: 40px 2fr 1.6fr 70px 120px;
   gap:10px;
   padding:10px;
   border-radius:14px;
@@ -521,7 +508,7 @@ button.danger{
   border-radius:18px;
   border:1px solid rgba(255,255,255,0.06);
   background:
-    radial-gradient(700px 140px at 20% 0%, rgba(29,185,84,0.18), transparent 55%),
+    radial-gradient(700px 140px at 20% 0%, rgba(54, 178, 104, 0.18)),
     rgba(15,22,32,0.9);
 }
 .bigTitle{ font-weight:900; font-size:18px; }
