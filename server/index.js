@@ -49,7 +49,7 @@ app.get("/songs", (req, res) => {
   if (!q) return res.json({ songs: SONGS });
 
   const filtered = SONGS.filter((s) => {
-    const hay = `${s.title} ${s.artist} ${s.album}`.toLowerCase();
+    const hay = `${s.title} ${s.artist}`.toLowerCase();
     return hay.includes(q);
   });
 
