@@ -21,7 +21,6 @@
     </header>
 
     <div class="layout">
-      <!-- Sidebar playlists -->
       <aside class="sidebar">
         <div class="sidebarHeader">
           <div class="sidebarTitle">Your Playlists</div>
@@ -60,8 +59,6 @@
           </div>
         </div>
       </aside>
-
-      <!-- Main songs -->
       <main class="main">
         <div class="panelHeader">
           <div class="panelTitle">Songs</div>
@@ -103,8 +100,6 @@
           </div>
         </div>
       </main>
-
-      <!-- Right panel (selected playlist songs) -->
       <section class="rightPanel">
         <div class="panelHeader">
           <div class="panelTitle">Playlist</div>
